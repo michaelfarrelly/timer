@@ -15,7 +15,7 @@ export function TitleBar() {
     return (
         <Navbar>
             <NavbarBrand>
-                <p className="font-bold text-inherit">ACME</p>
+                <p className="font-bold text-inherit">MF TIMER</p>
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
                 <NavbarItem isActive={pathname === "/"}>
