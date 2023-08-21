@@ -9,14 +9,8 @@ import {
     ModalFooter,
     useDisclosure,
     Input,
-    Link,
-    Navbar,
-    NavbarBrand,
-    NavbarContent,
-    NavbarItem,
 } from "@nextui-org/react";
 import React from "react";
-import { TitleBar } from "./titlebar";
 
 interface TimerData {
     timeLeft: number;
@@ -27,15 +21,15 @@ export default function Home() {
     const [timers, setTimers] = React.useState<TimerData[]>([]);
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const [valueHour, setValueHour] = React.useState<number>(0);
-    const [valueMinute, setValueMinute] = React.useState<number>(0);
-    const [valueSecond, setValueSecond] = React.useState<number>(0);
+    const [valueHour, setValueHour] = React.useState<string>("0");
+    const [valueMinute, setValueMinute] = React.useState<string>("0");
+    const [valueSecond, setValueSecond] = React.useState<string>("0");
 
     // callbacks
     const onAddTimer = React.useCallback(() => {
         setTimers((prevTimers) => [
             ...prevTimers,
-            { timeLeft: valueHour, timeTotal: valueHour },
+            { timeLeft: parseInt(valueHour), timeTotal: parseInt(valueHour) },
         ]);
         onOpenChange();
     }, [onOpenChange, valueHour]);
