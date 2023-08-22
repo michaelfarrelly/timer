@@ -12,8 +12,8 @@ export function TitleBar() {
                 <p className="font-bold text-inherit">MF TIMER</p>
             </NavbarBrand>
             <NavbarContent className="hidden sm:flex gap-4" justify="center">
-                <NavbarItem isActive={pathname === "/"}>
-                    <Link href="/" aria-current="page">
+                <NavbarItem isActive={pathname === "/timer"}>
+                    <Link href="/timer" aria-current="page">
                         Timer
                     </Link>
                 </NavbarItem>
