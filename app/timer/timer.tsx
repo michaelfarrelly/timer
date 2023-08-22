@@ -50,6 +50,8 @@ export function Timer({ maxTime, label, onDelete }: TimerProps) {
     const [active, setActive] = React.useState<boolean>(false);
     const [activeDates, setActiveDates] = React.useState<Row[]>([]);
 
+    const intervalId = React.useRef<NodeJS.Timeout | number | undefined>(undefined);
+
     const onPause = React.useCallback(() => {
         // pause the current record
         setActive(false);
@@ -74,8 +76,6 @@ export function Timer({ maxTime, label, onDelete }: TimerProps) {
         setActiveDates(prevDates => [...prevDates, { start: new Date(), totalTime: 0, isActive: true }]);
     }, []);
 
-    const intervalId = React.useRef<NodeJS.Timeout | number | undefined>();
-
     const onInterval = React.useCallback(() => {
         setActiveDates(prevDates => {
             const timeLeft1 = prevDates.reduce((prev, curr) => {
@@ -84,10 +84,10 @@ export function Timer({ maxTime, label, onDelete }: TimerProps) {
 
             if (timeLeft1 <= 0) {
                 // pause timer?
-                setActive(false);
-
                 clearInterval(intervalId.current);
                 intervalId.current = undefined;
+
+                setActive(false);
             }
             return prevDates.map(p => {
                 if (p.isActive) {
@@ -104,8 +104,10 @@ export function Timer({ maxTime, label, onDelete }: TimerProps) {
     }, [maxTime]);
 
     React.useEffect(() => {
+        let intervalId1: any = undefined;
         if (active) {
-            intervalId.current = setInterval(onInterval, 1000);
+            intervalId1 = setInterval(onInterval, 1000);
+            intervalId.current = intervalId1;
         } else {
             // stop interval
             if (intervalId.current) {
@@ -113,6 +115,7 @@ export function Timer({ maxTime, label, onDelete }: TimerProps) {
                 intervalId.current = undefined;
             }
         }
+        return () => clearInterval(intervalId1);
     }, [active, onInterval]);
 
     const timeLeft = React.useMemo(() => {
@@ -144,7 +147,12 @@ export function Timer({ maxTime, label, onDelete }: TimerProps) {
                     </Button>
                 </div>
             </CardHeader>
-            <CardBody>{active && timeLeft}</CardBody>
+            <CardBody>
+                <div className="container flex flex-row gap-10 items-center">
+                    {active && <CircularProgress />}
+                    {active && timeLeft}
+                </div>
+            </CardBody>
 
             <CardFooter>
                 <div className="flex flex-wrap gap-4 items-center center grow-0">
