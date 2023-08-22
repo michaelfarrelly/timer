@@ -1,3 +1,10 @@
 {
-  "extends": "next/core-web-vitals"
+  "extends": "next/core-web-vitals",
+  "plugins": ["simple-import-sort"],
+
+  "rules": {
+    // eslint-plugin-simple-sort rules
+    "simple-import-sort/exports": "warn",
+    "simple-import-sort/imports": "warn"
+  }
 }
