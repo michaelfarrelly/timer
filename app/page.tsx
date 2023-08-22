@@ -1,15 +1,7 @@
 "use client";
 
 import { Button } from "@nextui-org/button";
-import {
-    Modal,
-    ModalContent,
-    ModalHeader,
-    ModalBody,
-    ModalFooter,
-    useDisclosure,
-    Input,
-} from "@nextui-org/react";
+import { Input, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
 import React from "react";
 
 interface TimerData {
@@ -27,10 +19,7 @@ export default function Home() {
 
     // callbacks
     const onAddTimer = React.useCallback(() => {
-        setTimers((prevTimers) => [
-            ...prevTimers,
-            { timeLeft: parseInt(valueHour), timeTotal: parseInt(valueHour) },
-        ]);
+        setTimers(prevTimers => [...prevTimers, { timeLeft: parseInt(valueHour), timeTotal: parseInt(valueHour) }]);
         onOpenChange();
     }, [onOpenChange, valueHour]);
 
@@ -51,11 +40,9 @@ export default function Home() {
 
             <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
                 <ModalContent>
-                    {(onClose) => (
+                    {onClose => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">
-                                Add New Timer
-                            </ModalHeader>
+                            <ModalHeader className="flex flex-col gap-1">Add New Timer</ModalHeader>
                             <ModalBody>
                                 <Input
                                     type="number"
@@ -77,11 +64,7 @@ export default function Home() {
                                 ></Input>
                             </ModalBody>
                             <ModalFooter>
-                                <Button
-                                    color="danger"
-                                    variant="light"
-                                    onPress={onClose}
-                                >
+                                <Button color="danger" variant="light" onPress={onClose}>
                                     Close
                                 </Button>
                                 <Button color="primary" onPress={onAddTimer}>

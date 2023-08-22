@@ -1,12 +1,6 @@
 "use client";
 
-import {
-    Navbar,
-    NavbarBrand,
-    NavbarContent,
-    NavbarItem,
-    Button,
-} from "@nextui-org/react";
+import { Navbar, NavbarBrand, NavbarContent, NavbarItem } from "@nextui-org/react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 
@@ -27,7 +21,7 @@ export function TitleBar() {
                     <Link href="/stopwatch">Stopwatch</Link>
                 </NavbarItem>
             </NavbarContent>
-            <NavbarContent justify="end">
+            {/* <NavbarContent justify="end">
                 <NavbarItem className="hidden lg:flex">
                     <Link href="#">Login</Link>
                 </NavbarItem>
@@ -36,7 +30,7 @@ export function TitleBar() {
                         Sign Up
                     </Button>
                 </NavbarItem>
-            </NavbarContent>
+            </NavbarContent> */}
         </Navbar>
     );
 }

@@ -2,8 +2,8 @@ import { CountRow } from "./countrow";
 
 export default function StopwatchPage() {
     return (
-        <div>
-            Stopwatch <CountRow></CountRow>
+        <div className="container">
+            <h1 className="text-8xl font-sans font-black tracking-wide">Stopwatch</h1> <CountRow></CountRow>
         </div>
     );
 }
