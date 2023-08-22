@@ -27,11 +27,9 @@ interface Row {
     isActive: boolean;
 }
 
-export function CountRow() {
+export function Stopwatch() {
     const [rows, setRows] = React.useState<Row[]>([]);
     const [active, setActive] = React.useState<boolean>(false);
-
-    const d = new Date();
 
     const onPause = React.useCallback(() => {
         // pause the current record
@@ -46,6 +44,7 @@ export function CountRow() {
             })
         );
     }, []);
+
     const onStart = React.useCallback(() => {
         // add a record to rows.
         setActive(true);
@@ -72,7 +71,7 @@ export function CountRow() {
         .filter(r => !r.isActive)
         .map((r, i) => {
             return (
-                <TableRow key={`tr_${i}_${r.isActive ? new Date().getTime() : `_`}`}>
+                <TableRow key={`complete_${i}`}>
                     <TableCell> </TableCell>
                     <TableCell>{moment(r.start).format("h:mm:ss a")}</TableCell>
                     <TableCell>
@@ -88,7 +87,7 @@ export function CountRow() {
         .filter(r => r.isActive)
         .map((r, i) => {
             return (
-                <TableRow key={`tr_${i}_${new Date().getTime()}`}>
+                <TableRow key={`active_${i}`}>
                     <TableCell>
                         {r.isActive && <CircularProgress aria-label="Loading..." className="inline" />}
                     </TableCell>
@@ -113,6 +112,7 @@ export function CountRow() {
                     {!active && "00:00:00"}
                 </h1>
             </div>
+
             <div className="flex flex-wrap gap-4 items-center center grow-0">
                 <ButtonGroup className="items-center">
                     {active && (
