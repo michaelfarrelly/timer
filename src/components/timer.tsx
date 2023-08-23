@@ -1,12 +1,10 @@
 "use client";
 
-import { FlagIcon, XMarkIcon } from "@heroicons/react/20/solid";
+import { XMarkIcon } from "@heroicons/react/20/solid";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import { PauseIcon } from "@heroicons/react/24/outline";
 import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CircularProgress } from "@nextui-org/react";
-import moment from "moment";
 import React from "react";
-import Moment from "react-moment";
 import { clearInterval } from "timers";
 
 interface Row {
@@ -42,7 +40,7 @@ export interface TimerProps {
  *
  * TimeLeft, Label, Delete, Play/Pause
  */
-export function Timer({ maxTime, label, onDelete }: TimerProps) {
+export function Timer({ maxTime, label, onDelete }: TimerProps): JSX.Element {
     const [active, setActive] = React.useState<boolean>(false);
     const [activeDates, setActiveDates] = React.useState<Row[]>([]);
 

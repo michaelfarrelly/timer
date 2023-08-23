@@ -1,4 +1,4 @@
-import { Stopwatch } from "./stopwatch";
+import { Stopwatch } from "@/src/components/stopwatch";
 
 export default function StopwatchPage() {
     return (

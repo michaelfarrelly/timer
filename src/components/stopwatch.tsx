@@ -27,7 +27,7 @@ interface Row {
     isActive: boolean;
 }
 
-export function Stopwatch() {
+export function Stopwatch(): JSX.Element {
     const [rows, setRows] = React.useState<Row[]>([]);
     const [active, setActive] = React.useState<boolean>(false);
 
