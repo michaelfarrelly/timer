@@ -3,21 +3,7 @@
 import { FlagIcon, XMarkIcon } from "@heroicons/react/20/solid";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import { PauseIcon } from "@heroicons/react/24/outline";
-import {
-    Button,
-    ButtonGroup,
-    Card,
-    CardBody,
-    CardFooter,
-    CardHeader,
-    CircularProgress,
-    Table,
-    TableBody,
-    TableCell,
-    TableColumn,
-    TableHeader,
-    TableRow
-} from "@nextui-org/react";
+import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CircularProgress } from "@nextui-org/react";
 import moment from "moment";
 import React from "react";
 import Moment from "react-moment";
@@ -32,11 +18,21 @@ interface Row {
     isActive: boolean;
 }
 
+export interface TimeData {
+    hours: number;
+    minutes: number;
+    seconds: number;
+}
+
+export function getSeconds(input: TimeData): number {
+    return input.hours * 3600 + input.minutes * 60 + input.seconds;
+}
+
 export interface TimerProps {
     /**
      * seconds
      */
-    maxTime: number;
+    maxTime: TimeData;
     label: string;
     onDelete: () => void;
 }
@@ -80,7 +76,7 @@ export function Timer({ maxTime, label, onDelete }: TimerProps) {
         setActiveDates(prevDates => {
             const timeLeft1 = prevDates.reduce((prev, curr) => {
                 return prev - curr.totalTime;
-            }, maxTime);
+            }, getSeconds(maxTime));
 
             if (timeLeft1 <= 0) {
                 // pause timer?
@@ -93,7 +89,7 @@ export function Timer({ maxTime, label, onDelete }: TimerProps) {
                 if (p.isActive) {
                     return {
                         ...p,
-                        totalTime: timeLeft1 > 0 ? p.totalTime + 1 : maxTime,
+                        totalTime: timeLeft1 > 0 ? p.totalTime + 1 : getSeconds(maxTime),
                         isActive: timeLeft1 > 0 ? p.isActive : false
                     };
                 } else {
@@ -122,16 +118,16 @@ export function Timer({ maxTime, label, onDelete }: TimerProps) {
         if (active) {
             return activeDates.reduce((prev, curr) => {
                 return prev - curr.totalTime;
-            }, maxTime);
+            }, getSeconds(maxTime));
         } else {
             // when activeDates set, find time remaining.
             if (activeDates.length > 1) {
                 return activeDates.reduce((prev, curr) => {
                     return prev - curr.totalTime;
-                }, maxTime);
+                }, getSeconds(maxTime));
             } else {
                 // format?
-                return maxTime;
+                return getSeconds(maxTime);
             }
         }
     }, [active, activeDates, maxTime]);

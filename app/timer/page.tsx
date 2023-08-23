@@ -1,23 +1,38 @@
 "use client";
 
 import { BackspaceIcon, PlusIcon } from "@heroicons/react/24/outline";
-import {
-    Button,
-    Input,
-    Modal,
-    ModalBody,
-    ModalContent,
-    ModalFooter,
-    ModalHeader,
-    useDisclosure
-} from "@nextui-org/react";
+import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader, useDisclosure } from "@nextui-org/react";
+import cx from "classnames";
 import React from "react";
 
-import { Timer } from "./timer";
+import { TimeData, Timer } from "./timer";
 
 interface TimerInfo {
-    maxTime: number;
+    maxTime: TimeData;
     label: string;
+}
+
+export function KeyPadLabel({ value, label, hasValue }: { value: string; label: string; hasValue: boolean }) {
+    return (
+        <div>
+            <span
+                className={cx("text-4xl content-bottom", {
+                    "text-slate-700": !hasValue,
+                    "text-cyan-400": hasValue
+                })}
+            >
+                {value}
+            </span>
+            <span
+                className={cx("text-sm  content-bottom", {
+                    "text-slate-700": !hasValue,
+                    "text-cyan-400": hasValue
+                })}
+            >
+                {label}
+            </span>
+        </div>
+    );
 }
 
 export function KeyPad({
@@ -25,7 +40,7 @@ export function KeyPad({
     isOpen,
     onOpenChange
 }: {
-    onSubmit: (input: number) => void;
+    onSubmit: (input: TimeData) => void;
     isOpen: boolean;
     onOpenChange: any;
 }) {
@@ -36,16 +51,44 @@ export function KeyPad({
             return `${prevValue}${input}`;
         });
     }, []);
+
     const onBackspace = React.useCallback(() => {
+        // remove the last character
         setValue(prevValue => {
             return prevValue.length > 0 ? prevValue.substring(0, prevValue.length - 1) : "";
         });
     }, []);
 
     const onSubmitPress = React.useCallback(() => {
-        onSubmit(parseInt(value));
+        const paddedValue = value.padStart(6, "0");
+        const hours = paddedValue.substring(0, 2);
+        const minutes = paddedValue.substring(2, 4);
+        const seconds = paddedValue.substring(4);
+
+        // const submitValue = parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
+
+        onSubmit({ hours: parseInt(hours), minutes: parseInt(minutes), seconds: parseInt(seconds) });
         onOpenChange();
     }, [onOpenChange, onSubmit, value]);
+
+    const formattedValue = React.useMemo(() => {
+        const paddedValue = value.padStart(6, "0");
+        const hours = paddedValue.substring(0, 2);
+        const minutes = paddedValue.substring(2, 4);
+        const seconds = paddedValue.substring(4);
+
+        const hasHours = hours != "00";
+        const hasMinutes = minutes != "00" || hasHours;
+        const hasSeconds = seconds != "00" || hasMinutes || hasHours;
+
+        return (
+            <div className="flex flex-row gap-2">
+                <KeyPadLabel value={hours} label="h" hasValue={hasHours} />
+                <KeyPadLabel value={minutes} label="m" hasValue={hasMinutes} />
+                <KeyPadLabel value={seconds} label="s" hasValue={hasSeconds} />
+            </div>
+        );
+    }, [value]);
 
     return (
         <div>
@@ -55,7 +98,7 @@ export function KeyPad({
                         <>
                             <ModalHeader className="flex flex-col gap-1">Add New Timer</ModalHeader>
                             <ModalBody>
-                                {value}
+                                {formattedValue}
 
                                 <div className="flex flex-col flex-wrap gap-5">
                                     <div className="flex flex-row gap-5">
@@ -103,9 +146,13 @@ export default function TimerPage() {
 
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
-    const onAddTimer = React.useCallback((input: number) => {
+    const onAddTimer = React.useCallback((input: TimeData) => {
+        const label = `${input.hours > 0 ? `${input.hours}:` : ``}${input.minutes > 0 ? `${input.minutes}:` : ``}${
+            input.seconds > 0 ? `${input.seconds}:` : ``
+        }`;
+
         setTimers(prevTimers => {
-            return [...prevTimers, { maxTime: input, label: `${input} seconds` }];
+            return [...prevTimers, { maxTime: input, label: label }];
         });
     }, []);
     const onDeleteTimer = React.useCallback((index: number) => {
