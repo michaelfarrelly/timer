@@ -4,6 +4,7 @@ import { XMarkIcon } from "@heroicons/react/20/solid";
 import { PlayIcon } from "@heroicons/react/24/outline";
 import { PauseIcon } from "@heroicons/react/24/outline";
 import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CircularProgress } from "@nextui-org/react";
+import cx from "classnames";
 import React from "react";
 import { clearInterval } from "timers";
 
@@ -22,8 +23,70 @@ export interface TimeData {
     seconds: number;
 }
 
+const secondsInHour = 3600;
+const secondsInMinute = 60;
+
 export function getSeconds(input: TimeData): number {
-    return input.hours * 3600 + input.minutes * 60 + input.seconds;
+    return input.hours * secondsInHour + input.minutes * secondsInMinute + input.seconds;
+}
+
+export function getTimeDataFromSeconds(input: number): TimeData {
+    const qH = Math.floor(input / secondsInHour);
+    const rH = input % secondsInHour;
+
+    const qM = Math.floor(rH / secondsInMinute);
+    const rM = rH % secondsInMinute;
+
+    const qS = rM;
+
+    const hours = qH;
+    const minutes = qM;
+    const seconds = qS;
+    return { hours, minutes, seconds };
+}
+
+export function sanitize(input: TimeData): TimeData {
+    // WARN minutes and seconds would only be up to 2 digits at this point
+    const cloned = { ...input };
+    if (cloned.seconds > 60) {
+        // add extra to minutes
+        cloned.minutes++;
+        cloned.seconds -= 60;
+    }
+    if (cloned.minutes > 60) {
+        // add extra to hours
+        cloned.hours++;
+        cloned.minutes -= 60;
+    }
+    return cloned;
+}
+
+export interface TimerLabelPartProps {
+    value: number;
+    label: string;
+}
+
+export function TimerLabelPart({ value, label }: TimerLabelPartProps): JSX.Element {
+    return (
+        <div>
+            <span className={cx("text-4xl content-bottom text-cyan-400")}>{value}</span>
+            <span className={cx("text-sm content-bottom text-cyan-400")}>{label}</span>
+        </div>
+    );
+}
+
+export interface TimerLabelProps {
+    time: TimeData;
+}
+
+export function TimerLabel({ time }: TimerLabelProps): JSX.Element {
+    return (
+        <div className="flex flex-row gap-2">
+            {time.hours > 0 && <TimerLabelPart value={time.hours} label="h" />}
+            {(time.minutes > 0 || time.hours > 0) && <TimerLabelPart value={time.minutes} label="m" />}
+            <TimerLabelPart value={time.seconds} label="s" />
+        </div>
+    );
 }
 
 export interface TimerProps {
@@ -114,18 +177,22 @@ export function Timer({ maxTime, label, onDelete }: TimerProps): JSX.Element {
 
     const timeLeft = React.useMemo(() => {
         if (active) {
-            return activeDates.reduce((prev, curr) => {
-                return prev - curr.totalTime;
-            }, getSeconds(maxTime));
+            return getTimeDataFromSeconds(
+                activeDates.reduce((prev, curr) => {
+                    return prev - curr.totalTime;
+                }, getSeconds(maxTime))
+            );
         } else {
             // when activeDates set, find time remaining.
             if (activeDates.length > 1) {
-                return activeDates.reduce((prev, curr) => {
-                    return prev - curr.totalTime;
-                }, getSeconds(maxTime));
+                return getTimeDataFromSeconds(
+                    activeDates.reduce((prev, curr) => {
+                        return prev - curr.totalTime;
+                    }, getSeconds(maxTime))
+                );
             } else {
                 // format?
-                return getSeconds(maxTime);
+                return getTimeDataFromSeconds(getSeconds(maxTime));
             }
         }
     }, [active, activeDates, maxTime]);
@@ -144,7 +211,7 @@ export function Timer({ maxTime, label, onDelete }: TimerProps): JSX.Element {
             <CardBody>
                 <div className="container flex flex-row gap-10 items-center">
                     {active && <CircularProgress />}
-                    {active && timeLeft}
+                    {active && <TimerLabel time={timeLeft} />}
                 </div>
             </CardBody>
 

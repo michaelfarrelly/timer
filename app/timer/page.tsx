@@ -19,9 +19,12 @@ export default function TimerPage(): JSX.Element {
     const { isOpen, onOpen, onOpenChange } = useDisclosure();
 
     const onAddTimer = React.useCallback((input: TimeData) => {
-        const label = `${input.hours > 0 ? `${input.hours}:` : ``}${input.minutes > 0 ? `${input.minutes}:` : ``}${
-            input.seconds > 0 ? `${input.seconds}:` : ``
-        }`;
+        const labelParts = [
+            `${input.hours > 0 ? `${input.hours}h` : ``}`,
+            `${input.minutes > 0 ? `${input.minutes}m` : ``}`,
+            `${input.seconds > 0 ? `${input.seconds}s` : ``}`
+        ];
+        const label = labelParts.join(" ");
 
         setTimers(prevTimers => {
             return [...prevTimers, { maxTime: input, label: label }];

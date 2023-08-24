@@ -3,7 +3,7 @@ import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from
 import cx from "classnames";
 import React from "react";
 
-import { TimeData } from "./timer";
+import { sanitize, TimeData } from "./timer";
 
 export interface KeyPadLabelProps {
     value: string;
@@ -34,15 +34,13 @@ export function KeyPadLabel({ value, label, hasValue }: KeyPadLabelProps): JSX.E
     );
 }
 
-export function KeyPad({
-    onSubmit,
-    isOpen,
-    onOpenChange
-}: {
+export interface KeyPadProps {
     onSubmit: (input: TimeData) => void;
     isOpen: boolean;
     onOpenChange: any;
-}): JSX.Element {
+}
+
+export function KeyPad({ onSubmit, isOpen, onOpenChange }: KeyPadProps): JSX.Element {
     const [value, setValue] = React.useState<string>("");
 
     const onNumberPress = React.useCallback((input: string) => {
@@ -66,7 +64,7 @@ export function KeyPad({
 
         // const submitValue = parseInt(hours) * 3600 + parseInt(minutes) * 60 + parseInt(seconds);
 
-        onSubmit({ hours: parseInt(hours), minutes: parseInt(minutes), seconds: parseInt(seconds) });
+        onSubmit(sanitize({ hours: parseInt(hours), minutes: parseInt(minutes), seconds: parseInt(seconds) }));
         onOpenChange();
     }, [onOpenChange, onSubmit, value]);
 
@@ -129,7 +127,7 @@ export function KeyPad({
                                     Close
                                 </Button>
                                 <Button color="primary" onPress={onSubmitPress}>
-                                    Start
+                                    Add
                                 </Button>
                             </ModalFooter>
                         </>
