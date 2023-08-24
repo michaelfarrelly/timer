@@ -6,7 +6,6 @@ import { PauseIcon } from "@heroicons/react/24/outline";
 import { Button, ButtonGroup, Card, CardBody, CardFooter, CardHeader, CircularProgress } from "@nextui-org/react";
 import cx from "classnames";
 import React from "react";
-import { clearInterval } from "timers";
 
 interface Row {
     // date of start
@@ -141,7 +140,7 @@ export function Timer({ maxTime, label, onDelete }: TimerProps): JSX.Element {
 
             if (timeLeft1 <= 0) {
                 // pause timer?
-                clearInterval(intervalId.current);
+                clearTimeout(intervalId.current);
                 intervalId.current = undefined;
 
                 setActive(false);
@@ -210,7 +209,7 @@ export function Timer({ maxTime, label, onDelete }: TimerProps): JSX.Element {
             </CardHeader>
             <CardBody>
                 <div className="container flex flex-row gap-10 items-center">
-                    {active && <CircularProgress />}
+                    {active && <CircularProgress aria-label="Timer is active" />}
                     {active && <TimerLabel time={timeLeft} />}
                 </div>
             </CardBody>

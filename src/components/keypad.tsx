@@ -89,7 +89,7 @@ export function KeyPad({ onSubmit, isOpen, onOpenChange }: KeyPadProps): JSX.Ele
 
     return (
         <div>
-            <Modal isOpen={isOpen} onOpenChange={onOpenChange}>
+            <Modal isOpen={isOpen} onOpenChange={onOpenChange} backdrop="blur">
                 <ModalContent>
                     {onClose => (
                         <>

@@ -3,6 +3,7 @@ import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 
+import { BottomBar } from "./bottombar";
 import { Providers } from "./providers";
 import { TitleBar } from "./titlebar";
 
@@ -18,8 +19,9 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
         <html lang="en" className="dark">
             <body className={inter.className}>
                 <Providers>
-                    <TitleBar></TitleBar>
+                    <TitleBar />
                     {children}
+                    <BottomBar />
                 </Providers>
             </body>
         </html>
