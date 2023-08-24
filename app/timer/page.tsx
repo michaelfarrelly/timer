@@ -38,21 +38,29 @@ export default function TimerPage(): JSX.Element {
     }, []);
 
     return (
-        <div className="container flex flex-col flex-wrap gap-10">
+        <div className="container flex flex-col flex-wrap gap-10 text-center">
             <div>
                 <h1 className="text-8xl font-sans font-black tracking-wide">Timer</h1>
             </div>
-            <div className="container flex flex-row flex-wrap gap-10">
-                {timers.map((t, i) => {
-                    return <Timer key={i} maxTime={t.maxTime} label={t.label} onDelete={() => onDeleteTimer(i)} />;
-                })}
-            </div>
-            <div>
-                <Button isIconOnly onPress={onOpen}>
-                    <PlusIcon />
-                </Button>
+            <div className="flex flex-row">
+                <div className="grow w-50"></div>
+                <div className="grow-0">
+                    <div className="flex flex-row flex-wrap gap-10">
+                        {timers.map((t, i) => {
+                            return (
+                                <Timer key={i} maxTime={t.maxTime} label={t.label} onDelete={() => onDeleteTimer(i)} />
+                            );
+                        })}
+                    </div>
+                    <div>
+                        <Button isIconOnly onPress={onOpen}>
+                            <PlusIcon />
+                        </Button>
 
-                <KeyPad onSubmit={onAddTimer} isOpen={isOpen} onOpenChange={onOpenChange} />
+                        <KeyPad onSubmit={onAddTimer} isOpen={isOpen} onOpenChange={onOpenChange} />
+                    </div>
+                </div>
+                <div className="grow w-50"></div>
             </div>
         </div>
     );

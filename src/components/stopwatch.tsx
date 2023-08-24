@@ -105,7 +105,7 @@ export function Stopwatch(): JSX.Element {
         });
 
     return (
-        <div className="flex flex-col justify-between max-h-full">
+        <div className="flex flex-col justify-between max-h-full gap-5">
             <div>
                 <h1 className="text-8xl">
                     {active && <Moment interval={1000} durationFromNow date={rows[rows.length - 1].start} />}
@@ -113,8 +113,9 @@ export function Stopwatch(): JSX.Element {
                 </h1>
             </div>
 
-            <div className="flex flex-wrap gap-4 items-center center grow-0">
-                <ButtonGroup className="items-center">
+            <div className="flex gap-4 items-center text-center">
+                <div className="grow w-50"></div>
+                <ButtonGroup className="items-center grow-0">
                     {active && (
                         <Button onPress={onPause} isDisabled={!active}>
                             <PauseIcon />
@@ -129,6 +130,7 @@ export function Stopwatch(): JSX.Element {
                         <FlagIcon />
                     </Button>
                 </ButtonGroup>
+                <div className="grow w-50"></div>
             </div>
             <Table aria-label="Laps" className="grow">
                 <TableHeader>
