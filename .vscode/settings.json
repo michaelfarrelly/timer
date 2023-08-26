@@ -1,3 +1,22 @@
 {
-  "cSpell.words": ["Farrelly", "heroicons", "nextui", "Parens", "tailwindcss"]
+  "cSpell.words": ["Farrelly", "heroicons", "nextui", "Parens", "tailwindcss"],
+  "editor.formatOnSave": true,
+  "editor.defaultFormatter": "esbenp.prettier-vscode",
+  "editor.codeActionsOnSave": {
+    "source.fixAll": true
+  },
+
+  "files.exclude": {
+    "**/.git": true,
+    "**/.DS_Store": true,
+    "**/.*_cache": true
+  },
+
+  "typescript.tsdk": "node_modules/typescript/lib",
+  "typescript.tsc.autoDetect": "off", // do not pollute tasks with auto-detected typescript tasks
+  "npm.autoDetect": "off", // do not pollute tasks with auto-detected NPM tasks
+
+  // eslint extension settings
+  "eslint.packageManager": "yarn",
+  "eslint.validate": ["javascript", "javascriptreact", "typescript", "typescriptreact", "html"]
 }

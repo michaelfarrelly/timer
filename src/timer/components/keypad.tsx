@@ -3,7 +3,7 @@ import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from
 import cx from "classnames";
 import React from "react";
 
-import { sanitize, TimeData } from "./timer";
+import { sanitize, TimeData } from "../types";
 
 export interface KeyPadLabelProps {
     value: string;
@@ -38,14 +38,20 @@ export interface KeyPadProps {
     onSubmit: (input: TimeData) => void;
     isOpen: boolean;
     onOpenChange: any;
+    title?: string;
 }
 
-export function KeyPad({ onSubmit, isOpen, onOpenChange }: KeyPadProps): JSX.Element {
+export function KeyPad({ onSubmit, isOpen, onOpenChange, title = "Add New Timer" }: KeyPadProps): JSX.Element {
     const [value, setValue] = React.useState<string>("");
 
     const onNumberPress = React.useCallback((input: string) => {
         setValue(prevValue => {
-            return `${prevValue}${input}`;
+            if (prevValue.length < 6) {
+                // only allow 6 characters
+                return `${prevValue}${input}`;
+            } else {
+                return prevValue;
+            }
         });
     }, []);
 
@@ -66,6 +72,9 @@ export function KeyPad({ onSubmit, isOpen, onOpenChange }: KeyPadProps): JSX.Ele
 
         onSubmit(sanitize({ hours: parseInt(hours), minutes: parseInt(minutes), seconds: parseInt(seconds) }));
         onOpenChange();
+
+        // reset
+        setValue("");
     }, [onOpenChange, onSubmit, value]);
 
     const formattedValue = React.useMemo(() => {
@@ -80,9 +89,12 @@ export function KeyPad({ onSubmit, isOpen, onOpenChange }: KeyPadProps): JSX.Ele
 
         return (
             <div className="flex flex-row gap-2">
+                <div className="w-50 grow"></div>
                 <KeyPadLabel value={hours} label="h" hasValue={hasHours} />
                 <KeyPadLabel value={minutes} label="m" hasValue={hasMinutes} />
                 <KeyPadLabel value={seconds} label="s" hasValue={hasSeconds} />
+
+                <div className="w-50 grow"></div>
             </div>
         );
     }, [value]);
@@ -93,33 +105,39 @@ export function KeyPad({ onSubmit, isOpen, onOpenChange }: KeyPadProps): JSX.Ele
                 <ModalContent>
                     {onClose => (
                         <>
-                            <ModalHeader className="flex flex-col gap-1">Add New Timer</ModalHeader>
+                            <ModalHeader className="flex flex-col gap-1">{title}</ModalHeader>
                             <ModalBody>
-                                {formattedValue}
+                                <div className="flex flex-row">
+                                    <div className="w-50 grow"></div>
+                                    <div className="w-50 grow-0 text-center">
+                                        <div className="flex flex-col flex-wrap gap-5">
+                                            {formattedValue}
 
-                                <div className="flex flex-col flex-wrap gap-5">
-                                    <div className="flex flex-row gap-5">
-                                        <Button onPress={() => onNumberPress("1")}>1</Button>
-                                        <Button onPress={() => onNumberPress("2")}>2</Button>
-                                        <Button onPress={() => onNumberPress("3")}>3</Button>
+                                            <div className="flex flex-row gap-5">
+                                                <Button onPress={() => onNumberPress("1")}>1</Button>
+                                                <Button onPress={() => onNumberPress("2")}>2</Button>
+                                                <Button onPress={() => onNumberPress("3")}>3</Button>
+                                            </div>
+                                            <div className="flex flex-row gap-5">
+                                                <Button onPress={() => onNumberPress("4")}>4</Button>
+                                                <Button onPress={() => onNumberPress("5")}>5</Button>
+                                                <Button onPress={() => onNumberPress("6")}>6</Button>
+                                            </div>
+                                            <div className="flex flex-row gap-5">
+                                                <Button onPress={() => onNumberPress("7")}>7</Button>
+                                                <Button onPress={() => onNumberPress("8")}>8</Button>
+                                                <Button onPress={() => onNumberPress("9")}>9</Button>
+                                            </div>
+                                            <div className="flex flex-row gap-5">
+                                                <Button onPress={() => onNumberPress("00")}>00</Button>
+                                                <Button onPress={() => onNumberPress("0")}>0</Button>
+                                                <Button onPress={() => onBackspace()}>
+                                                    <BackspaceIcon />
+                                                </Button>
+                                            </div>
+                                        </div>
                                     </div>
-                                    <div className="flex flex-row gap-5">
-                                        <Button onPress={() => onNumberPress("4")}>4</Button>
-                                        <Button onPress={() => onNumberPress("5")}>5</Button>
-                                        <Button onPress={() => onNumberPress("6")}>6</Button>
-                                    </div>
-                                    <div className="flex flex-row gap-5">
-                                        <Button onPress={() => onNumberPress("7")}>7</Button>
-                                        <Button onPress={() => onNumberPress("8")}>8</Button>
-                                        <Button onPress={() => onNumberPress("9")}>9</Button>
-                                    </div>
-                                    <div className="flex flex-row gap-5">
-                                        <Button onPress={() => onNumberPress("00")}>00</Button>
-                                        <Button onPress={() => onNumberPress("0")}>0</Button>
-                                        <Button onPress={() => onBackspace()}>
-                                            <BackspaceIcon />
-                                        </Button>
-                                    </div>
+                                    <div className="w-50 grow"></div>
                                 </div>
                             </ModalBody>
                             <ModalFooter>
