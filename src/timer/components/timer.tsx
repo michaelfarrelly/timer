@@ -19,12 +19,14 @@ interface Row {
 }
 
 export interface TimerProps {
+    active: boolean;
     /**
      * seconds
      */
     maxTime: TimeData;
     label: string;
     onDelete: () => void;
+    onActiveChanged: (isActive: boolean) => void;
 }
 
 /**
@@ -32,15 +34,16 @@ export interface TimerProps {
  *
  * TimeLeft, Label, Delete, Play/Pause
  */
-export function Timer({ maxTime, label, onDelete }: TimerProps): JSX.Element {
-    const [active, setActive] = React.useState<boolean>(false);
+export function Timer({ active, maxTime, label, onDelete, onActiveChanged }: TimerProps): JSX.Element {
     const [activeDates, setActiveDates] = React.useState<Row[]>([]);
 
     const intervalId = React.useRef<NodeJS.Timeout | number | undefined>(undefined);
 
     const onPause = React.useCallback(() => {
         // pause the current record
-        setActive(false);
+        // setActive(false);
+
+        onActiveChanged(false);
 
         setActiveDates(prevDates => {
             return prevDates.map(p => {
@@ -55,12 +58,12 @@ export function Timer({ maxTime, label, onDelete }: TimerProps): JSX.Element {
                 }
             });
         });
-    }, []);
+    }, [onActiveChanged]);
 
     const onStart = React.useCallback(() => {
-        setActive(true);
+        onActiveChanged(true);
         setActiveDates(prevDates => [...prevDates, { start: new Date(), totalTime: 0, isActive: true }]);
-    }, []);
+    }, [onActiveChanged]);
 
     const onInterval = React.useCallback(() => {
         setActiveDates(prevDates => {
@@ -73,7 +76,7 @@ export function Timer({ maxTime, label, onDelete }: TimerProps): JSX.Element {
                 clearTimeout(intervalId.current);
                 intervalId.current = undefined;
 
-                setActive(false);
+                onActiveChanged(false);
             }
             return prevDates.map(p => {
                 if (p.isActive) {
@@ -87,7 +90,7 @@ export function Timer({ maxTime, label, onDelete }: TimerProps): JSX.Element {
                 }
             });
         });
-    }, [maxTime]);
+    }, [maxTime, onActiveChanged]);
 
     React.useEffect(() => {
         let intervalId1: any = undefined;

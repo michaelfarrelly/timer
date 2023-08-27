@@ -1,3 +1,5 @@
+"use client";
+
 import { BackspaceIcon } from "@heroicons/react/20/solid";
 import { Button, Modal, ModalBody, ModalContent, ModalFooter, ModalHeader } from "@nextui-org/react";
 import cx from "classnames";

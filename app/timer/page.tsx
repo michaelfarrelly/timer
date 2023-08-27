@@ -12,6 +12,7 @@ import { TimeData } from "@/src/timer/types";
 interface TimerInfo {
     maxTime: TimeData;
     label: string;
+    active: boolean;
 }
 
 export default function TimerPage(): JSX.Element {
@@ -29,7 +30,7 @@ export default function TimerPage(): JSX.Element {
             const label = labelParts.join(" ");
 
             setTimers(prevTimers => {
-                return [...(prevTimers ?? []), { maxTime: input, label: label }];
+                return [...(prevTimers ?? []), { maxTime: input, label: label, active: false }];
             });
         },
         [setTimers]
@@ -44,6 +45,20 @@ export default function TimerPage(): JSX.Element {
         },
         [setTimers]
     );
+    const onActiveTimer = React.useCallback(
+        (index: number, activeValue: boolean) => {
+            // remove timer at index
+            setTimers(prevTimers => {
+                return (prevTimers ?? []).map((v, i) => {
+                    if (i === index) {
+                        return { ...v, active: activeValue };
+                    }
+                    return v;
+                });
+            });
+        },
+        [setTimers]
+    );
 
     return (
         <div className="container flex flex-col flex-wrap gap-10 text-center">
@@ -53,7 +68,14 @@ export default function TimerPage(): JSX.Element {
                     <div className="grid grid-cols-4 gap-4">
                         {timers.map((t, i) => {
                             return (
-                                <Timer key={i} maxTime={t.maxTime} label={t.label} onDelete={() => onDeleteTimer(i)} />
+                                <Timer
+                                    key={i}
+                                    maxTime={t.maxTime}
+                                    label={t.label}
+                                    active={t.active}
+                                    onDelete={() => onDeleteTimer(i)}
+                                    onActiveChanged={v => onActiveTimer(i, v)}
+                                />
                             );
                         })}
                     </div>
